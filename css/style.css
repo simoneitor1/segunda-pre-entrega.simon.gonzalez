@@ -213,3 +213,10 @@ header{
 .hidden{
     display: none;
 }
+
+
+.coment{
+    align-items: center;
+    padding-bottom: 70px;
+   
+}

@@ -139,3 +139,65 @@ const showHTML = () => {
 	valorTotal.innerText = `$${total}`;
 	countProducts.innerText = totalOfProducts;
 };
+
+
+
+
+
+let comentarios = [];
+const listaComentarios = document.querySelector("#lista-comentarios");
+let formulario = document.querySelector("#formulario");
+
+function agregarComentario(evt) {
+  evt.preventDefault();
+  const comentario = document.querySelector("#comentario").value;
+
+  if (comentario === "") {
+    alert("Error: Completar el campo comentario");
+    return;
+  }
+  const comentarioObj = {
+    id: Date.now(),
+    texto: comentario,
+  };
+  comentarios.push(comentarioObj);
+  formulario.reset();
+  crearHTML();
+}
+function crearHTML() {
+  limpiarHTML();
+  comentarios.forEach((item) => {
+    const btnBorrar = document.createElement("a");
+    btnBorrar.className = "borrar-comentario";
+    btnBorrar.textContent = " ❎ ";
+
+    const li = document.createElement("li");
+    li.textContent = item.texto;
+    li.dataset.comentarioId = item.id;
+    li.appendChild(btnBorrar);
+    listaComentarios.appendChild(li);
+  });
+  sincronizarStorage();
+}
+function limpiarHTML() {
+  while (listaComentarios.firstChild) {
+    listaComentarios.removeChild(listaComentarios.firstChild);
+  }
+}
+function borrarComentario(evt) {
+  evt.preventDefault();
+  const id = evt.target.parentElement.dataset.comentarioId;
+  comentarios = comentarios.filter((comentario) => comentario.id != id);
+  crearHTML();
+}
+function sincronizarStorage() {
+  localStorage.setItem("comentarios", JSON.stringify(comentarios));
+}
+window.addEventListener("DOMContentLoaded", () => {
+  comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+  crearHTML();
+});
+formulario.addEventListener("submit", agregarComentario);
+listaComentarios.addEventListener("click", borrarComentario);
+
+
